@@ -1,0 +1,29 @@
+body {
+    font-family: "museo sans", Arial, Helvetica, sans-serif;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    background-color: #191819;
+}
+
+.flex-item {
+    width: 100%;
+    margin: 20px;
+    padding: 5px;
+
+}
+
+#recordings-container {
+    border-style: solid;
+    border-color: #fff;
+    border-radius: 3px;
+}
+
+.recording {
+    list-style: none;
+}
+
+a {
+    color: #fff;
+    text-decoration: none;
+}
