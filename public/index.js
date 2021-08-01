@@ -1,47 +1,83 @@
-let button = document.getElementById("record-btn");
+const recordButton = document.getElementById("record-btn");
+const stopButton = document.getElementById("stop-record-btn");
 
-button.addEventListener("click", (event) => record(event));
+let shouldStop = false;
+let stopped = false;
 
-async function record(e) {
-  e.preventDefault();
+recordButton.addEventListener("mousedown", (e) => audioRecorder.start(e));
+recordButton.addEventListener("mouseup", (e) => audioRecorder.stop(e));
 
-  try {
-    //create stream
-    const device = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: false,
-    });
+const audioRecorder = {
+  // stream: null,
+  recorder: null,
+  recordedChunks: [],
+  init: function () {
+    audioRecorder.recorder = null;
+    audioRecorder.recordedChunks = [];
+  },
+  start: async function (e) {
+    try {
+      const device = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: false,
+      });
 
-    //pass stream to new recorder instance
-    const recorder = new MediaRecorder(device);
+      audioRecorder.recorder = new MediaRecorder(device);
+      audioRecorder.recorder.onstop = function (e) {
+        const blob = new Blob(audioRecorder.recordedChunks, {
+          type: "audio/ogg; codecs=opus",
+        });
+        const audioURL = window.URL.createObjectURL(blob);
 
-    //array to save blobs generated from recording
-    const recordedChunks = [];
+        console.log(audioURL);
 
-    recorder.onstop = function (e) {
-      const audio = document.createElement("audio");
-      audio.controls = true;
-      const blob = new Blob(recordedChunks, { type: "audio/ogg; codecs=opus" });
-      const audioURL = window.URL.createObjectURL(blob);
-      audio.src = audioURL;
+        createAudioEl(audioURL);
+        //TODO: post audio and retrieve new list
+      };
+      audioRecorder.recorder.addEventListener("dataavailable", (e) => {
+        if (e.data.size > 0) {
+          audioRecorder.recordedChunks.push(e.data);
+        }
+      });
+      console.log(audioRecorder);
 
-      document.getElementById("recordings-container").appendChild(audio);
-    };
+      audioRecorder.recorder.start();
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  stop: function (e) {
+    e.preventDefault();
 
-    recorder.addEventListener("dataavailable", (e) => {
-      if (e.data.size > 0) {
-        recordedChunks.push(e.data);
-      }
-    });
+    audioRecorder.recorder.stop();
 
-    console.log(recorder);
+    audioRecorder.init();
+  },
+};
 
-    recorder.start();
-    setTimeout(() => console.log(recordedChunks), 3000);
-    setTimeout(() => console.log(recordedChunks), 4000);
+function createAudioEl(audioURL) {
+  console.log(audioURL);
+  let recordingsList = document.getElementById("recordings-list");
 
-    setTimeout(() => recorder.stop(), 5000);
-  } catch (err) {
-    //TODO: account for race condition
-  }
+  let newRecording = document.createElement("audio");
+
+  newRecording.setAttribute("controls", "");
+  newRecording.src = audioURL;
+  recordingsList.appendChild(newRecording);
+}
+
+function postAudio(url) {
+  return fetch("http://localhost:3000/audio", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(url),
+  }).catch((err) => console.log("post error", err));
+}
+
+function getAudioURLs() {
+  return fetch("http://localhost:3000/audio")
+    .then((response) => response.json())
+    .catch((err) => console.log("get error", err));
 }

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/connorleee/Audio-Recorder#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "eslint": "^7.31.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.23.4",
