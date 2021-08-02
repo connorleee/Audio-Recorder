@@ -45,7 +45,7 @@ audioRecorder.init();
 
 async function handleStop() {
   const blob = new Blob(audioRecorder.recordedChunks, {
-    type: "audio/ogg; codecs=opus",
+    type: "audio/mp3",
   });
   const audioURL = window.URL.createObjectURL(blob);
 
@@ -64,6 +64,7 @@ function createAudioEl(audioURL) {
 
   newRecording.setAttribute("controls", "");
   newRecording.src = audioURL;
+  newRecording.download = "audio.mp3";
   recordingsList.appendChild(newRecording);
 }
 
