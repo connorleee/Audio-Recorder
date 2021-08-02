@@ -1,6 +1,6 @@
 # Audio Recorder
 
-##About
+## About
 Audio Recorder is a protoype web application that allows users to quickly record audio using their device microphone and playback previous recordings. The app is built with vanilla Javascript and a simple Node/Express server to emulate storage of audio recordings. 
 
 ## Steps to run demo
