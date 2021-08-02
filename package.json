@@ -4,7 +4,8 @@
   "description": "Simple audio recorder for the web",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "start public/index.html && node server.js"
   },
   "repository": {
     "type": "git",
