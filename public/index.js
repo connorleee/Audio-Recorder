@@ -28,13 +28,9 @@ const audioRecorder = {
     }
   },
   start: async function (e) {
-    try {
-      await audioRecorder.init();
+    audioRecorder.recordedChunks = [];
 
-      audioRecorder.recorder.start();
-    } catch (err) {
-      console.log(err);
-    }
+    audioRecorder.recorder.start();
   },
   stop: function () {
     audioRecorder.recorder.stop();
