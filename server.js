@@ -1,22 +1,22 @@
 const express = require("express");
+const cors = require("cors");
 
 const app = express();
 const PORT = 3000;
 
+app.use(cors());
 app.use(express.json());
 
-const recordings = [];
-
-app.get("/audio", (req, res) => {
-  res.send(recordings);
-});
+const data = {
+  recordings: [],
+};
 
 app.post("/audio", (req, res) => {
   let { recordingURL } = req.body;
 
-  recordings.push(recordingURL);
+  data.recordings.push(recordingURL);
 
-  res.send({ msg: "successful" });
+  return res.json(recordingURL);
 });
 
 app.listen(PORT, () => {

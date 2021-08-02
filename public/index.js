@@ -1,47 +1,79 @@
-let button = document.getElementById("record-btn");
+const recordButton = document.getElementById("record-btn");
+const stopButton = document.getElementById("stop-record-btn");
 
-button.addEventListener("click", (event) => record(event));
+let shouldStop = false;
+let stopped = false;
 
-async function record(e) {
-  e.preventDefault();
+recordButton.addEventListener("mousedown", (e) => audioRecorder.start(e));
+recordButton.addEventListener("mouseup", (e) => audioRecorder.stop(e));
+
+const audioRecorder = {
+  recorder: null,
+  recordedChunks: [],
+  init: async function () {
+    audioRecorder.recordedChunks = [];
+
+    try {
+      const device = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      audioRecorder.recorder = new MediaRecorder(device);
+      audioRecorder.recorder.onstop = handleStop;
+      audioRecorder.recorder.addEventListener("dataavailable", (e) => {
+        if (e.data.size > 0) {
+          audioRecorder.recordedChunks.push(e.data);
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  start: async function (e) {
+    try {
+      await audioRecorder.init();
+
+      audioRecorder.recorder.start();
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  stop: function () {
+    audioRecorder.recorder.stop();
+  },
+};
+
+audioRecorder.init();
+
+async function handleStop() {
+  const blob = new Blob(audioRecorder.recordedChunks, {
+    type: "audio/mp3",
+  });
+  const audioURL = window.URL.createObjectURL(blob);
 
   try {
-    //create stream
-    const device = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: false,
-    });
-
-    //pass stream to new recorder instance
-    const recorder = new MediaRecorder(device);
-
-    //array to save blobs generated from recording
-    const recordedChunks = [];
-
-    recorder.onstop = function (e) {
-      const audio = document.createElement("audio");
-      audio.controls = true;
-      const blob = new Blob(recordedChunks, { type: "audio/ogg; codecs=opus" });
-      const audioURL = window.URL.createObjectURL(blob);
-      audio.src = audioURL;
-
-      document.getElementById("recordings-container").appendChild(audio);
-    };
-
-    recorder.addEventListener("dataavailable", (e) => {
-      if (e.data.size > 0) {
-        recordedChunks.push(e.data);
-      }
-    });
-
-    console.log(recorder);
-
-    recorder.start();
-    setTimeout(() => console.log(recordedChunks), 3000);
-    setTimeout(() => console.log(recordedChunks), 4000);
-
-    setTimeout(() => recorder.stop(), 5000);
+    let recording = await postAudio(audioURL).then((res) => res.json());
+    createAudioEl(recording);
   } catch (err) {
-    //TODO: account for race condition
+    console.log(err);
   }
+}
+
+function createAudioEl(audioURL) {
+  let recordingsList = document.getElementById("recordings-list");
+
+  let newRecording = document.createElement("audio");
+
+  newRecording.setAttribute("controls", "");
+  newRecording.src = audioURL;
+  newRecording.download = "audio.mp3";
+  recordingsList.appendChild(newRecording);
+}
+
+function postAudio(recordingURL) {
+  return fetch("http://localhost:3000/audio", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ recordingURL }),
+  }).catch((err) => console.log("post error", err));
 }
