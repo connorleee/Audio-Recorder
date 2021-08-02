@@ -62,6 +62,7 @@ function createAudioEl(audioURL) {
 
   let newRecording = document.createElement("audio");
 
+  newRecording.setAttribute("class", "recording");
   newRecording.setAttribute("controls", "");
   newRecording.src = audioURL;
   newRecording.download = "audio.mp3";

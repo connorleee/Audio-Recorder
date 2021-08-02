@@ -1,9 +1,17 @@
+@font-face {
+    font-family: "lubalin";
+    src: url("./fonts/LubalinGraphStd-Book.otf");
+}
+
 body {
     font-family: "museo sans", Arial, Helvetica, sans-serif;
     color: #fff;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     background-color: #191819;
+    margin-left: 15%; 
+    margin-right: 15%;
 }
 
 .flex-item {
@@ -12,14 +20,68 @@ body {
     padding: 5px;
 }
 
+.recording {
+    list-style: none;
+    width: 100%;
+    margin: 5px;
+
+}
+
+#record-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 32px;;
+}
+
+#record-btn {
+    min-width: 200px;
+    min-height: 100px;
+    border-radius: 4px;
+    font-size: 2em;
+    font-weight: 700;
+    color: #fff;
+    background-color: hsl(180,60%,48%);
+    border-color: hsl(180,60%,48%);
+    transition: .5s ease;
+    border-style:none;
+}
+
+#record-btn:hover {
+    background-color: hsl(180,60%,30%);
+    border-color: hsl(180,60%,48%);
+    color: #fff;
+    cursor: pointer;
+    
+}
+
+#record-btn:active {
+    background-color: red;
+}
+
+#record-btn:active::after{
+    content: "ing..."
+}
+
 #recordings-container {
     border-style: solid;
     border-color: #fff;
-    border-radius: 3px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.recording {
-    list-style: none;
+#recordings-list {
+    width: 70%;
+    padding: 0;
+}
+
+h1{
+    font-family: "lubalin";
+    font-size: 3.3em;
+    font-weight:700;
+    text-align: center;
 }
 
 a {
