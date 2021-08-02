@@ -1,8 +1,11 @@
 # Audio Recorder
 
-**Note: Node.js is required to be installed prior to running this application. Directions to install are in prerequisites section below.
+##About
+Audio Recorder is a protoype web application that allows users to quickly record audio using their device microphone and playback previous recordings. The app is built with vanilla Javascript and a simple Node/Express server to emulate storage of audio recordings. 
 
 ## Steps to run demo
+**Note: Node.js is required to be installed prior to running this application. Directions to install are in prerequisites section below.
+
 1. Clone repo to local machine entering terminal command: `git clone https://github.com/connorleee/Audio-Recorder.git` once in the directory you would like to clone into.
 2. Change directory to the cloned Audio-Recorder repo.
 3. Enter command `npm install` to install all required npm packages.
