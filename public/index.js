@@ -23,30 +23,27 @@ const audioRecorder = {
       });
 
       audioRecorder.recorder = new MediaRecorder(device);
-      audioRecorder.recorder.onstop = function (e) {
+      audioRecorder.recorder.onstop = async function (e) {
         const blob = new Blob(audioRecorder.recordedChunks, {
           type: "audio/ogg; codecs=opus",
         });
         const audioURL = window.URL.createObjectURL(blob);
 
-        console.log(audioURL);
-
-        createAudioEl(audioURL);
-        //TODO: post audio and retrieve new list
+        let recording = await postAudio(audioURL).then((res) => res.json());
+        createAudioEl(recording);
       };
       audioRecorder.recorder.addEventListener("dataavailable", (e) => {
         if (e.data.size > 0) {
           audioRecorder.recordedChunks.push(e.data);
         }
       });
-      console.log(audioRecorder);
 
       audioRecorder.recorder.start();
     } catch (err) {
       console.log(err);
     }
   },
-  stop: function (e) {
+  stop: async function (e) {
     e.preventDefault();
 
     audioRecorder.recorder.stop();
@@ -56,7 +53,6 @@ const audioRecorder = {
 };
 
 function createAudioEl(audioURL) {
-  console.log(audioURL);
   let recordingsList = document.getElementById("recordings-list");
 
   let newRecording = document.createElement("audio");
@@ -66,18 +62,27 @@ function createAudioEl(audioURL) {
   recordingsList.appendChild(newRecording);
 }
 
-function postAudio(url) {
+function postAudio(recordingURL) {
   return fetch("http://localhost:3000/audio", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(url),
+    body: JSON.stringify({ recordingURL }),
   }).catch((err) => console.log("post error", err));
 }
 
 function getAudioURLs() {
-  return fetch("http://localhost:3000/audio")
-    .then((response) => response.json())
-    .catch((err) => console.log("get error", err));
+  return (
+    fetch("http://localhost:3000/audio")
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          console.log("Failed to get audio URLs");
+        }
+      })
+      // .then((data) => console.log(data))
+      .catch((err) => console.log("get error", err))
+  );
 }
