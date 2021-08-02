@@ -1,9 +1,6 @@
 const recordButton = document.getElementById("record-btn");
 const stopButton = document.getElementById("stop-record-btn");
 
-let shouldStop = false;
-let stopped = false;
-
 recordButton.addEventListener("mousedown", (e) => audioRecorder.start(e));
 recordButton.addEventListener("mouseup", (e) => audioRecorder.stop(e));
 
@@ -27,7 +24,7 @@ const audioRecorder = {
       console.log(err);
     }
   },
-  start: async function (e) {
+  start: function (e) {
     audioRecorder.recordedChunks = [];
 
     audioRecorder.recorder.start();
@@ -55,13 +52,12 @@ async function handleStop() {
 
 function createAudioEl(audioURL) {
   let recordingsList = document.getElementById("recordings-list");
-
   let newRecording = document.createElement("audio");
 
   newRecording.setAttribute("class", "recording");
   newRecording.setAttribute("controls", "");
   newRecording.src = audioURL;
-  newRecording.download = "audio.mp3";
+
   recordingsList.appendChild(newRecording);
 }
 
