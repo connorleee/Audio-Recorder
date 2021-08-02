@@ -18,6 +18,28 @@ but at minimum it should store it so that it can be played back.
 3. Be able to explain the code at the level a junior dev could understand, justify design
 decisions, choice of dependencies, trade-offs, etc.
 
+## Additional notes
+### Architecture/Design Decisions
+- The decision to save a recording instantly after releasing the click was made to eliminate extra barriers for a user to use the feature such as naming a file, etc. 
+- Record button needed to have positive feedback when recording to eliminate any confusion by end user.
+- Unearth fonts and color themes were utilized.
+
+### Technical Decisions
+- The recording functionality utilizes the Media Streams API that is natively supported by all modern browsers. For future releases, support for Internet Explorer may need to be considered based on customer needs/preferences.
+- In order to support multiple recordings, the "audio recorder" is set up as an object to maintain context on individual recordings. Additionally, the object can be abstracted to different files and exported as a module for reuse.
+- Data is stored as an an object on the server to allow flexibility to support more data such as file names, creation times, etc in future releases. Currently only an array of blob URLs is utilized for prototyping purposes.
+
+### Future Optimizations
+- Store actual audio files in DB instead of blob URLs
+- Added error handling 
+  - Recordings fail if record button is tapped
+  - Ensure server connection is established before user begins recording to prevent data loss
+- Add support for naming, deleting, filtering, and sorting recordings
+- Allow user to hold a key instead of clicking mouse to record
+- Allow user to toggle record instead of holding click
+- Add unit testing
+- Modularize audio recorder for reuse
+
 ## Prerequisites
 ### Node
  
