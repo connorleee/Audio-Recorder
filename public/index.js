@@ -1,7 +1,6 @@
 //Note: I don't normally comment like this, but wanted to demonstrate my thought process a little more.
 
 const recordButton = document.getElementById("record-btn");
-const stopButton = document.getElementById("stop-record-btn");
 
 recordButton.addEventListener("mousedown", () => audioRecorder.start());
 recordButton.addEventListener("mouseup", () => audioRecorder.stop());
@@ -75,3 +74,5 @@ function postAudio(recordingURL) {
     body: JSON.stringify({ recordingURL }),
   }).catch((err) => console.log("post error", err));
 }
+
+module.exports = {};
